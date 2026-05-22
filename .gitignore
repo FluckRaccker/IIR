@@ -1,0 +1,9 @@
+*.o
+*.vcd
+*.cf
+*.bak
+*.tcl
+*.xml
+*dts
+*dtsbo
+
