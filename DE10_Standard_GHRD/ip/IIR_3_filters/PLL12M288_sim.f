@@ -1,1 +1,0 @@
-PLL12M288_sim/PLL12M288.vo

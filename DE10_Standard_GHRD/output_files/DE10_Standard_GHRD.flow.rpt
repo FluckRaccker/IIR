@@ -1,5 +1,5 @@
 Flow report for DE10_Standard_GHRD
-Thu Mar 26 16:20:43 2026
+Sun May 24 22:27:21 2026
 Quartus Prime Version 20.1.0 Build 711 06/05/2020 SJ Lite Edition
 
 
@@ -41,24 +41,24 @@ https://fpgasoftware.intel.com/eula.
 +-------------------------------------------------------------------------------+
 ; Flow Summary                                                                  ;
 +---------------------------------+---------------------------------------------+
-; Flow Status                     ; Successful - Thu Mar 26 16:19:34 2026       ;
+; Flow Status                     ; Successful - Sun May 24 22:25:48 2026       ;
 ; Quartus Prime Version           ; 20.1.0 Build 711 06/05/2020 SJ Lite Edition ;
 ; Revision Name                   ; DE10_Standard_GHRD                          ;
 ; Top-level Entity Name           ; DE10_Standard_GHRD                          ;
 ; Family                          ; Cyclone V                                   ;
 ; Device                          ; 5CSXFC6D6F31C6                              ;
 ; Timing Models                   ; Final                                       ;
-; Logic utilization (in ALMs)     ; 3,674 / 41,910 ( 9 % )                      ;
-; Total registers                 ; 5646                                        ;
+; Logic utilization (in ALMs)     ; 3,530 / 41,910 ( 8 % )                      ;
+; Total registers                 ; 5330                                        ;
 ; Total pins                      ; 338 / 499 ( 68 % )                          ;
 ; Total virtual pins              ; 0                                           ;
 ; Total block memory bits         ; 3,072 / 5,662,720 ( < 1 % )                 ;
-; Total DSP Blocks                ; 6 / 112 ( 5 % )                             ;
+; Total DSP Blocks                ; 4 / 112 ( 4 % )                             ;
 ; Total HSSI RX PCSs              ; 0 / 9 ( 0 % )                               ;
 ; Total HSSI PMA RX Deserializers ; 0 / 9 ( 0 % )                               ;
 ; Total HSSI TX PCSs              ; 0 / 9 ( 0 % )                               ;
 ; Total HSSI PMA TX Serializers   ; 0 / 9 ( 0 % )                               ;
-; Total PLLs                      ; 1 / 15 ( 7 % )                              ;
+; Total PLLs                      ; 0 / 15 ( 0 % )                              ;
 ; Total DLLs                      ; 1 / 4 ( 25 % )                              ;
 +---------------------------------+---------------------------------------------+
 
@@ -68,7 +68,7 @@ https://fpgasoftware.intel.com/eula.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 03/26/2026 16:10:14 ;
+; Start date & time ; 05/24/2026 22:12:00 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; DE10_Standard_GHRD  ;
 +-------------------+---------------------+
@@ -79,7 +79,7 @@ https://fpgasoftware.intel.com/eula.
 +---------------------------------------+--------------------------------------------------------------------------+---------------+--------------------------------+------------+
 ; Assignment Name                       ; Value                                                                    ; Default Value ; Entity Name                    ; Section Id ;
 +---------------------------------------+--------------------------------------------------------------------------+---------------+--------------------------------+------------+
-; COMPILER_SIGNATURE_ID                 ; 91756563510.177455220920816                                              ; --            ; --                             ; --         ;
+; COMPILER_SIGNATURE_ID                 ; 167690713999864.177967151434300                                          ; --            ; --                             ; --         ;
 ; ECO_REGENERATE_REPORT                 ; On                                                                       ; Off           ; --                             ; --         ;
 ; HPS_ISW_FILE                          ; soc_system/synthesis/submodules/sequencer/alt_types.pre.h                ; --            ; soc_system_hps_0_hps_io_border ; --         ;
 ; HPS_ISW_FILE                          ; soc_system/synthesis/submodules/sequencer/emif.pre.xml                   ; --            ; soc_system_hps_0_hps_io_border ; --         ;
@@ -135,11 +135,11 @@ https://fpgasoftware.intel.com/eula.
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 ; Module Name          ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis ; 00:01:26     ; 1.2                     ; 5286 MB             ; 00:02:04                           ;
-; Fitter               ; 00:03:58     ; 1.1                     ; 7101 MB             ; 00:06:34                           ;
-; Assembler            ; 00:00:16     ; 1.0                     ; 4951 MB             ; 00:00:15                           ;
-; Timing Analyzer      ; 00:01:06     ; 1.2                     ; 5725 MB             ; 00:01:20                           ;
-; Total                ; 00:06:46     ; --                      ; --                  ; 00:10:13                           ;
+; Analysis & Synthesis ; 00:01:58     ; 1.2                     ; 5280 MB             ; 00:02:22                           ;
+; Fitter               ; 00:07:22     ; 1.1                     ; 7109 MB             ; 00:09:21                           ;
+; Assembler            ; 00:00:34     ; 1.0                     ; 4952 MB             ; 00:00:24                           ;
+; Timing Analyzer      ; 00:01:31     ; 1.2                     ; 5678 MB             ; 00:01:41                           ;
+; Total                ; 00:11:25     ; --                      ; --                  ; 00:13:48                           ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 

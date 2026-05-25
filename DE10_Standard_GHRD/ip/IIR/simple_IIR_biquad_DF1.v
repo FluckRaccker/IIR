@@ -1,74 +1,91 @@
+module simple_IIR_biquad_DF1 
+#(
+    parameter int Q_SHIFT = 14
+)
+(
+    input  logic clk,
+    input  logic reset,        // reset ativo em 0
+    input  logic clear_state,
 
-module simple_IIR_biquad_DF1 (
-	input clk,
-	input signed [15:0] din,
+    input  logic sample_tick,
+    input  logic signed [15:0] din,
 
-	input signed [15:0] a1_fixed,
-	input signed [15:0] a2_fixed,
-	input signed [15:0] b0_fixed,
-	input signed [15:0] b1_fixed,
-	input signed [15:0] b2_fixed,
+    input  logic signed [15:0] a1_fixed,
+    input  logic signed [15:0] a2_fixed,
+    input  logic signed [15:0] b0_fixed,
+    input  logic signed [15:0] b1_fixed,
+    input  logic signed [15:0] b2_fixed,
 
-	output signed [15:0] dout
+    output logic signed [15:0] dout,
+    output logic               dout_valid
 );
 
+    logic signed [15:0] x_z1;
+    logic signed [15:0] x_z2;
+    logic signed [15:0] y_z1;
+    logic signed [15:0] y_z2;
 
+    wire signed [31:0] product_b0 = din  * b0_fixed;
+    wire signed [31:0] product_b1 = x_z1 * b1_fixed;
+    wire signed [31:0] product_b2 = x_z2 * b2_fixed;
 
-//	reg signed [15:0] a1_fixed = 1360;
-//	reg signed [15:0] a2_fixed = 2831;
-//	reg signed [15:0] b0_fixed = 5193;
-//	reg signed [15:0] b1_fixed = -8825;
-//	reg signed [15:0] b2_fixed = 3838;
+    wire signed [31:0] product_a1 = -(y_z1 * a1_fixed);
+    wire signed [31:0] product_a2 = -(y_z2 * a2_fixed);
 
-  // filter coefficients (multiplied floating point coefficients by 2^14)
-  // sos = {1.0000   -1.8057    1.0000    1.0000   -1.9459    0.9480}
-  //         b0         b1        b2        a0        a1        a2
-  //   g = 0.0102 
-//  reg signed [15:0] a1_fixed = -31881;
-//  reg signed [15:0] a2_fixed = 15531;
-//  reg signed [15:0] b0_fixed = 167;    // g * b0 * 2^14  (multiply denom coeffs by gain for DF1 [source 1])
-//  reg signed [15:0] b1_fixed = -302;   // g * b1 * 2^14 
-//  reg signed [15:0] b2_fixed = 167;    // g * b2 * 2^14
-	
-  // input register
-  reg signed [15:0] r_x = 0;
+    wire signed [35:0] acc =
+        {{4{product_b0[31]}}, product_b0} +
+        {{4{product_b1[31]}}, product_b1} +
+        {{4{product_b2[31]}}, product_b2} +
+        {{4{product_a1[31]}}, product_a1} +
+        {{4{product_a2[31]}}, product_a2};
 
-  // output register
-  reg signed [15:0] r_y = 0;
+    wire signed [35:0] y_scaled = acc >>> Q_SHIFT;
 
-  // delay registers
-  reg signed [15:0] r_x_z1 = 0;
-  reg signed [15:0] r_x_z2 = 0;
-  reg signed [15:0] r_y_z1 = 0;
-  reg signed [15:0] r_y_z2 = 0;
+    function automatic logic signed [15:0] sat16;
+        input logic signed [35:0] value;
+        begin
+            if (value > 36'sd32767)
+                sat16 = 16'sh7FFF;
+            else if (value < -36'sd32768)
+                sat16 = 16'sh8000;
+            else
+                sat16 = value[15:0];
+        end
+    endfunction
 
-  // multiplication wires
-  wire signed [31:0] w_product_a1;
-  wire signed [31:0] w_product_a2;
-  wire signed [31:0] w_product_b0;
-  wire signed [31:0] w_product_b1;
-  wire signed [31:0] w_product_b2;
+    wire signed [15:0] y_next = sat16(y_scaled);
 
-  wire signed [31:0] w_sum; 
+    always_ff @(posedge clk) begin
+        if (!reset) begin
+            x_z1       <= 16'sd0;
+            x_z2       <= 16'sd0;
+            y_z1       <= 16'sd0;
+            y_z2       <= 16'sd0;
+            dout       <= 16'sd0;
+            dout_valid <= 1'b0;
+        end
+        else begin
+            dout_valid <= 1'b0;
 
-  always @ (posedge clk)
-    begin
-      r_x <= din;
-      r_x_z1 <= r_x;
-      r_x_z2 <= r_x_z1;
-      r_y_z1 <= w_sum >>> 14;  // divide by the same 2^14 value the coefficients were multiplied by
-      r_y_z2 <= r_y_z1;
+            if (clear_state) begin
+                x_z1       <= 16'sd0;
+                x_z2       <= 16'sd0;
+                y_z1       <= 16'sd0;
+                y_z2       <= 16'sd0;
+                dout       <= 16'sd0;
+                dout_valid <= 1'b0;
+            end
+            else if (sample_tick) begin
+                dout       <= y_next;
+                dout_valid <= 1'b1;
+
+                x_z2 <= x_z1;
+                x_z1 <= din;
+
+                y_z2 <= y_z1;
+                y_z1 <= y_next;
+            end
+        end
     end
-
-  // multiply
-  assign w_product_a1 = r_y_z1 * -a1_fixed;
-  assign w_product_a2 = r_y_z2 * -a2_fixed;
-  assign w_product_b0 = r_x * b0_fixed;
-  assign w_product_b1 = r_x_z1 * b1_fixed;
-  assign w_product_b2 = r_x_z2 * b2_fixed;
-
-  assign w_sum = w_product_b0 + w_product_b1 + w_product_b2 + w_product_a1 + w_product_a2;
-
-  assign dout = r_y_z1;
 
 endmodule
